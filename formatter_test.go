@@ -13,6 +13,7 @@ func TestPlainFormat(t *testing.T) {
 	f.Format(&buf, time.Now(), DebugLevel, "Debug Hello", []Field{String("Name", "World")})
 	t.Log(buf.String())
 	buf.Reset()
+	f.ShowSource = 2
 	f.Format(&buf, time.Now(), InfoLevel, "Info Hello", []Field{String("Name", "世\t界")})
 	t.Log(buf.String())
 }

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/vizee/litebuf"
@@ -17,11 +19,31 @@ var plainTags = [...]string{
 	DebugLevel: " [D]",
 }
 
-var DefaultFormatter *PlainFormatter
+var defaultFormatter = &PlainFormatter{ShowSource: 3}
 
-type PlainFormatter struct{}
+type PlainFormatter struct {
+	ShowSource int
+}
 
-func (*PlainFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel, msg string, fields []Field) {
+func (f *PlainFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel, msg string, fields []Field) {
+	if f.ShowSource&3 != 0 {
+		pc, file, ln, ok := runtime.Caller(3)
+		if ok {
+			if f.ShowSource&1 != 0 {
+				buf.WriteString(filepath.Base(file))
+				buf.WriteByte(':')
+				buf.AppendInt(int64(ln), 10)
+				buf.WriteByte(':')
+			}
+			if f.ShowSource&2 != 0 {
+				fn := runtime.FuncForPC(pc)
+				buf.WriteString(fn.Name())
+				buf.WriteByte(':')
+			}
+			buf.WriteByte(' ')
+		}
+	}
+
 	TimeFormat(buf.Reserve(19), t)
 
 	buf.WriteString(plainTags[level])
