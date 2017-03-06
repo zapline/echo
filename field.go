@@ -103,6 +103,10 @@ func Interface(key string, val interface{}) Field {
 	return Field{Type: TypeInterface, Key: key, Data: val}
 }
 
+func Format(key string, format string, args ...interface{}) Field {
+	return Field{Type: TypeString, Key: key, Str: fmt.Sprintf(format, args...)}
+}
+
 func Stack(all bool) Field {
 	n := 1 << 12 // 4K
 	if all {
