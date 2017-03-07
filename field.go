@@ -23,6 +23,7 @@ const (
 	TypeFloat32
 	TypeFloat64
 	TypeString
+	TypeQuote
 	TypeError
 	TypeStringer
 	TypeOutputer
@@ -91,12 +92,16 @@ func String(key string, val string) Field {
 	return Field{Type: TypeString, Key: key, Str: val}
 }
 
-func Stringer(key string, val fmt.Stringer) Field {
-	return Field{Type: TypeStringer, Key: key, Data: val}
+func Quote(key string, val string) Field {
+	return Field{Type: TypeQuote, Key: key, Str: val}
 }
 
 func Errors(key string, val error) Field {
 	return Field{Type: TypeError, Key: key, Data: val}
+}
+
+func Stringer(key string, val fmt.Stringer) Field {
+	return Field{Type: TypeStringer, Key: key, Data: val}
 }
 
 func Interface(key string, val interface{}) Field {

@@ -76,11 +76,18 @@ func (*PlainFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel, 
 			case TypeString:
 				buf.WriteString(field.Str)
 
-			case TypeStringer:
-				buf.WriteString(field.Data.(fmt.Stringer).String())
+			case TypeQuote:
+				QuoteString(buf, field.Str, false)
 
 			case TypeError:
-				buf.WriteString(field.Data.(error).Error())
+				if err := field.Data.(error); err != nil {
+					buf.WriteString(err.Error())
+				} else {
+					buf.WriteString("nil")
+				}
+
+			case TypeStringer:
+				buf.WriteString(field.Data.(fmt.Stringer).String())
 
 			case TypeOutputer:
 				field.Data.(Outputer).Output(buf)
@@ -205,14 +212,18 @@ func (f *JSONFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel,
 			case TypeFloat64:
 				buf.AppendFloat(math.Float64frombits(field.U64), 'f', -1, 64)
 
-			case TypeString:
+			case TypeString, TypeQuote:
 				QuoteString(buf, field.Str, f.EscapeUnicode)
+
+			case TypeError:
+				if err := field.Data.(error); err != nil {
+					QuoteString(buf, err.Error(), f.EscapeUnicode)
+				} else {
+					buf.WriteString("null")
+				}
 
 			case TypeStringer:
 				QuoteString(buf, field.Data.(fmt.Stringer).String(), f.EscapeUnicode)
-
-			case TypeError:
-				QuoteString(buf, field.Data.(error).Error(), f.EscapeUnicode)
 
 			case TypeOutputer:
 				field.Data.(Outputer).Output(buf)
@@ -221,7 +232,7 @@ func (f *JSONFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel,
 				json.NewEncoder(buf).Encode(field.Data)
 
 			case TypeStack:
-				// skip stack type
+				// skip types
 
 			default:
 				panic(fmt.Sprintf("unknown field type: %d", field.Type))
