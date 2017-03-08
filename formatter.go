@@ -17,7 +17,7 @@ var plainTags = [...]string{
 	DebugLevel: " [D]",
 }
 
-var defaultFormatter = &PlainFormatter{}
+var DefaultFormatter = &PlainFormatter{}
 
 type PlainFormatter struct{}
 
@@ -89,11 +89,14 @@ func (*PlainFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel, 
 			case TypeStringer:
 				buf.WriteString(field.Data.(fmt.Stringer).String())
 
-			case TypeOutputer:
-				field.Data.(Outputer).Output(buf)
+			case TypeFormat:
+				fmt.Fprintf(buf, field.Str, field.Data.([]interface{}))
 
 			case TypeInterface:
 				fmt.Fprint(buf, field.Data)
+
+			case TypeOutputer:
+				field.Data.(Outputer).Output(buf)
 
 			case TypeStack:
 				buf.WriteByte('\n')
@@ -224,6 +227,13 @@ func (f *JSONFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel,
 
 			case TypeStringer:
 				QuoteString(buf, field.Data.(fmt.Stringer).String(), f.EscapeUnicode)
+
+			case TypeFormat:
+				tmpbuf := bufpool.Get().(*litebuf.Buffer)
+				tmpbuf.Reset()
+				fmt.Fprintf(buf, field.Str, field.Data.([]interface{}))
+				QuoteString(buf, tmpbuf.String(), false)
+				bufpool.Put(tmpbuf)
 
 			case TypeOutputer:
 				field.Data.(Outputer).Output(buf)

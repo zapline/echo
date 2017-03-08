@@ -51,7 +51,7 @@ func (l *Logger) log(level LogLevel, msg string, fields []Field) {
 
 	f := l.fmter
 	if f == nil {
-		f = defaultFormatter
+		f = DefaultFormatter
 	}
 	f.Format(buf, time.Now(), level, msg, fields)
 

@@ -26,8 +26,9 @@ const (
 	TypeQuote
 	TypeError
 	TypeStringer
-	TypeOutputer
+	TypeFormat
 	TypeInterface
+	TypeOutputer
 	TypeStack
 	maxType
 )
@@ -109,7 +110,7 @@ func Interface(key string, val interface{}) Field {
 }
 
 func Format(key string, format string, args ...interface{}) Field {
-	return Field{Type: TypeString, Key: key, Str: fmt.Sprintf(format, args...)}
+	return Field{Type: TypeFormat, Key: key, Str: format, Data: args}
 }
 
 func Stack(all bool) Field {
