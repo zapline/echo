@@ -95,8 +95,8 @@ func (*PlainFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel, 
 			case TypeInterface:
 				fmt.Fprint(buf, field.Data)
 
-			case TypeOutputer:
-				field.Data.(Outputer).Output(buf)
+			case TypeEchoer:
+				field.Data.(Echoer).Echo(buf)
 
 			case TypeStack:
 				buf.WriteByte('\n')
@@ -108,8 +108,6 @@ func (*PlainFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel, 
 			}
 		}
 	}
-
-	buf.WriteByte('\n')
 }
 
 type TimeType int
@@ -235,8 +233,8 @@ func (f *JSONFormatter) Format(buf *litebuf.Buffer, t time.Time, level LogLevel,
 				QuoteString(buf, tmpbuf.String(), false)
 				bufpool.Put(tmpbuf)
 
-			case TypeOutputer:
-				field.Data.(Outputer).Output(buf)
+			case TypeEchoer:
+				field.Data.(Echoer).Echo(buf)
 
 			case TypeInterface:
 				json.NewEncoder(buf).Encode(field.Data)

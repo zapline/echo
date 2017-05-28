@@ -28,13 +28,13 @@ const (
 	TypeStringer
 	TypeFormat
 	TypeInterface
-	TypeOutputer
+	TypeEchoer
 	TypeStack
 	maxType
 )
 
-type Outputer interface {
-	Output(w *litebuf.Buffer)
+type Echoer interface {
+	Echo(w *litebuf.Buffer)
 }
 
 type Field struct {
@@ -107,6 +107,10 @@ func Stringer(key string, val fmt.Stringer) Field {
 
 func Interface(key string, val interface{}) Field {
 	return Field{Type: TypeInterface, Key: key, Data: val}
+}
+
+func Echo(key string, val Echoer) Field {
+	return Field{Type: TypeEchoer, Key: key, Data: val}
 }
 
 func Format(key string, format string, args ...interface{}) Field {

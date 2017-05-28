@@ -54,6 +54,7 @@ func (l *Logger) log(level LogLevel, msg string, fields []Field) {
 		f = DefaultFormatter
 	}
 	f.Format(buf, time.Now(), level, msg, fields)
+	buf.WriteByte('\n')
 
 	w := l.w
 	if w == nil {
