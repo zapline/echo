@@ -27,7 +27,7 @@ const (
 	TypeError
 	TypeStringer
 	TypeFormat
-	TypeInterface
+	TypeVar
 	TypeEchoer
 	TypeStack
 	maxType
@@ -105,8 +105,8 @@ func Stringer(key string, val fmt.Stringer) Field {
 	return Field{Type: TypeStringer, Key: key, Data: val}
 }
 
-func Interface(key string, val interface{}) Field {
-	return Field{Type: TypeInterface, Key: key, Data: val}
+func Var(key string, val interface{}) Field {
+	return Field{Type: TypeVar, Key: key, Data: val}
 }
 
 func Echo(key string, val Echoer) Field {
@@ -118,9 +118,9 @@ func Format(key string, format string, args ...interface{}) Field {
 }
 
 func Stack(all bool) Field {
-	n := 1 << 12 // 4K
+	n := 1 << 12
 	if all {
-		n <<= 8 // grow to 1 MB
+		n <<= 8
 	}
 	var buf []byte
 	for n <= 64<<20 {

@@ -35,13 +35,13 @@ func TestLog(t *testing.T) {
 		String("string", "string5"),
 		Stringer("stringer", time.Now()),
 		Errors("errors", errors.New("err")),
-		Interface("iface", map[string]int{"a": 1, "b": 2}),
+		Var("var", map[string]int{"a": 1, "b": 2}),
 		Stack(false),
 	}
 	l.Debug("test", fields...)
 }
 
-func BenchmarkLog(b *testing.B) {
+func BenchmarkLog1Field(b *testing.B) {
 	l := Logger{}
 	l.SetLevel(DebugLevel)
 	l.SetOutput(ioutil.Discard)

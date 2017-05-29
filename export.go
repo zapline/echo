@@ -5,7 +5,11 @@ import (
 	"os"
 )
 
-var export Logger
+var export = Logger{
+	level: InfoLevel,
+	w:     os.Stdout,
+	fmter: DefaultFormatter,
+}
 
 func Level() LogLevel {
 	return export.Level()
@@ -41,9 +45,4 @@ func Error(msg string, fields ...Field) {
 
 func Fatal(msg string, fields ...Field) {
 	export.Fatal(msg, fields...)
-}
-
-func init() {
-	export.SetLevel(InfoLevel)
-	export.SetOutput(os.Stdout)
 }

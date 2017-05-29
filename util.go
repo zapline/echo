@@ -25,27 +25,26 @@ func getdigit(n byte) (byte, byte) {
 	return n/10 + '0', n%10 + '0'
 }
 
-func TimeFormat(tbuf []byte, t time.Time) {
-	tbuf = tbuf[:19]
+func TimeFormat(buf []byte, t time.Time) {
+	buf = buf[:19]
 	year, month, day := t.Date()
-	tbuf[0], tbuf[1] = getdigit(byte(year / 100))
-	tbuf[2], tbuf[3] = getdigit(byte(year % 100))
-	tbuf[4] = '-'
-	tbuf[5], tbuf[6] = getdigit(byte(month))
-	tbuf[7] = '-'
-	tbuf[8], tbuf[9] = getdigit(byte(day))
-	tbuf[10] = '/'
+	buf[0], buf[1] = getdigit(byte(year / 100))
+	buf[2], buf[3] = getdigit(byte(year % 100))
+	buf[4] = '-'
+	buf[5], buf[6] = getdigit(byte(month))
+	buf[7] = '-'
+	buf[8], buf[9] = getdigit(byte(day))
+	buf[10] = '/'
 	hour, min, sec := t.Clock()
-	tbuf[11], tbuf[12] = getdigit(byte(hour))
-	tbuf[13] = ':'
-	tbuf[14], tbuf[15] = getdigit(byte(min))
-	tbuf[16] = ':'
-	tbuf[17], tbuf[18] = getdigit(byte(sec))
+	buf[11], buf[12] = getdigit(byte(hour))
+	buf[13] = ':'
+	buf[14], buf[15] = getdigit(byte(min))
+	buf[16] = ':'
+	buf[17], buf[18] = getdigit(byte(sec))
 }
 
 func QuoteString(buf *litebuf.Buffer, s string, unicode bool) {
 	buf.WriteByte('"')
-
 	p := 0
 	for i := 0; i < len(s); i++ {
 		c := s[i]
@@ -54,7 +53,6 @@ func QuoteString(buf *litebuf.Buffer, s string, unicode bool) {
 				if p < i {
 					buf.WriteString(s[p:i])
 				}
-
 				buf.WriteByte('\\')
 				buf.WriteByte(esctable[c])
 				p = i + 1
@@ -63,7 +61,6 @@ func QuoteString(buf *litebuf.Buffer, s string, unicode bool) {
 			if p < i {
 				buf.WriteString(s[p:i])
 			}
-
 			r, n := utf8.DecodeRuneInString(s[i:])
 			h := [6]byte{
 				'\\',
@@ -78,10 +75,8 @@ func QuoteString(buf *litebuf.Buffer, s string, unicode bool) {
 			p = i + 1
 		}
 	}
-
 	if p < len(s) {
 		buf.WriteString(s[p:])
 	}
-
 	buf.WriteByte('"')
 }
