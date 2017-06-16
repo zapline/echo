@@ -1,12 +1,12 @@
 # echo
-a lite log package, provide [zap](https://github.com/uber-go/zap) style API
+A lite log package, provide [zap](https://github.com/uber-go/zap) style API
 
-## install
+## Install
 ```
 go get -u -v github.com/vizee/echo
 ```
 
-### usage
+### Usage
 ```go
 package main
 
