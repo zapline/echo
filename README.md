@@ -1,5 +1,5 @@
 # echo
-A lite log package, provide [zap](https://github.com/uber-go/zap) style API
+A lite log package, provide [zap](https://github.com/uber-go/zap) style API.
 
 ## Install
 ```
